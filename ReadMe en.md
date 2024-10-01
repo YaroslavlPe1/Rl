@@ -1,1 +1,1 @@
-Hello, this is a translated article.
+## Hello, this is a translated article.
