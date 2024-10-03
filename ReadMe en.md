@@ -1,6 +1,6 @@
 # Hi, you want to use a simple language but you don't know which one 🌅
 
-## try the programming language Ru💿
+## try the programming language Rulet🎂
 
 ```
 🥳🥳🥳
