@@ -4,5 +4,5 @@
 
 ```
 🥳🥳🥳
-The language will be openly available in a month with a compiler and detailed documentation.
+This is the first version that does not know much, but soon there will be a release of a full virtual machine and language.
 ```
