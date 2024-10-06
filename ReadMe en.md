@@ -113,6 +113,6 @@ This document describes the syntax and functions of a custom programming languag
 - **public**: Access modifier for classes and their members.
 
 ### Declaring a variable 🔄
-``cpp
+```cpp
 int x; // Declaring an integer variable
-``
+```
