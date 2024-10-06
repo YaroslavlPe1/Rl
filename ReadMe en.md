@@ -115,3 +115,4 @@ This document describes the syntax and functions of a custom programming languag
 ### Declaring a variable 🔄
 ``cpp
 int x; // Declaring an integer variable
+``
