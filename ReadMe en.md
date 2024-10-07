@@ -1,6 +1,6 @@
 # Hi, you want to use a simple language but you don't know which one 🌅
 
-## try the programming language Rulet🎂
+## try the programming language Roll🎂
 
 ```
 🥳🥳🥳
@@ -9,7 +9,7 @@ This is the first version that does not know much, but soon there will be a rele
 
 # The syntax is the same as in C++
 
-## Keywords Rulet 🎂
+## Keywords Roll 🎂
 ### In the future 
 ### Data types
 - **`bool`**: 🔄 A logical data type that takes the values `true` or `false'.
@@ -87,7 +87,7 @@ This is the first version that does not know much, but soon there will be a rele
 - **`and_eq`**, **`or_eq`**, **`not_eq`**: 🔄 Alternative entries of assignment operators `&=`, `|=`, `!=`.
 
 # Now 
-## Rulet Keywords 🎂
+## Roll Keywords 🎂
 
 # Syntax of a custom programming language 📜
 
