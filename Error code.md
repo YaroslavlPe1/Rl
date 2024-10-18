@@ -30,3 +30,6 @@ controller("cout('привет');",true,false);
 ```cpp
 controller(myText,false,false);
 ```
+Режим работы обязательный.
+
+### Код ошибки номер 3
