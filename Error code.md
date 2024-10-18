@@ -29,5 +29,5 @@ controller("cout('привет');",true,false);
 Ошибка: не выбран режим работы!
 
 ```cpp
-    controller(myText,false,false);
+controller(myText,false,false);
 ```
