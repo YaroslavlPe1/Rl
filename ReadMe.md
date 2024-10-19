@@ -15,3 +15,15 @@ Debug — это обработка с откладкой кода и вывод
 controller(myText,false,true);
 ```
 true - значения для работы в режиме Debug 
+
+
+``` cpp
+    NUMBER    -   0
+    PLUS      -   1
+    MINUS     -   2
+    MULTIPLY  -   3
+    DIVIDE    -   4
+    LPAREN    -   5
+    RPAREN    -   6
+    END       -   7
+```
