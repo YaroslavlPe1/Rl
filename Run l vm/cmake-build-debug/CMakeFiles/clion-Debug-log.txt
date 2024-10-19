@@ -1,4 +1,0 @@
-"E:\файлы\Program\CLion 2024.1.4\bin\cmake\win\x64\bin\cmake.exe" -DCMAKE_BUILD_TYPE=Debug "-DCMAKE_MAKE_PROGRAM=E:/файлы/Program/CLion 2024.1.4/bin/ninja/win/x64/ninja.exe" -G Ninja -S "E:\файлы\Мои проекты\крупные проекты\Run l vm" -B "E:\файлы\Мои проекты\крупные проекты\Run l vm\cmake-build-debug"
--- Configuring done (0.2s)
--- Generating done (0.1s)
--- Build files have been written to: E:/файлы/Мои проекты/крупные проекты/Run l vm/cmake-build-debug
