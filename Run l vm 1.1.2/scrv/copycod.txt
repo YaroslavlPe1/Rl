@@ -1,0 +1,419 @@
+void CinRunFile() {
+    UTF();
+    std::string cdfile;
+
+    std::cout << "Enter the file path: ";
+    std::getline(std::cin, cdfile);
+
+    RunFile(cdfile);
+}
+
+int RunFile(const std::string& DFile) {
+    UTF();  // Assuming this sets up necessary UTF handling
+
+    // Convert std::string to std::wstring using Windows API (MultiByteToWideChar)
+    std::wstring wideFilePath(DFile.length(), L'\0');
+    int result = MultiByteToWideChar(CP_UTF8, 0, DFile.c_str(), -1, &wideFilePath[0], wideFilePath.length());
+
+    if (result == 0) {
+        std::cerr << "Error: Failed to convert file path using MultiByteToWideChar. Error code: " << GetLastError() << std::endl;
+        return 1;  // Exit on conversion failure
+    }
+
+    // Open file using wifstream
+    std::wifstream file(wideFilePath.c_str());
+    file.imbue(std::locale(file.getloc(), new std::codecvt_utf8_utf16<wchar_t>));  // Ensure UTF-8 encoding
+
+    if (!file.is_open()) {
+        int err = 3;
+        std::wcerr << L"Debug: Failed to open file at path: " << wideFilePath << std::endl;
+        error(err, "Ошибка: файл не удалось открыть.", "Error: the file could not be opened.");
+        return 1;
+    }
+
+    std::wstring line;
+    std::vector<std::wstring> fileContents;
+
+    while (std::getline(file, line)) {
+        fileContents.push_back(line);
+        std::wcout << line << std::endl;
+    }
+
+    file.close();
+    return 0;
+}
+
+
+void UTF();
+void enderr();
+void error();
+void pcode();
+void verbose();
+void debag();
+void controller();
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#include "controller.h"
+ #include "lexer.h"
+ #include <iostream>
+ #include <fstream>
+ #include <sstream>
+ #include "parser.h"
+
+ #ifdef _WIN32
+ #include <windows.h>
+ #endif
+
+ void UTF() {
+ #ifdef _WIN32
+  SetConsoleOutputCP(CP_UTF8);
+ #endif
+ }
+
+ void enderr(int errend) {
+  UTF();
+  std::cout << "\nProcess finished with exit code " << errend << std::endl;
+ }
+
+ void error(int err, const std::string& text, const std::string& texta) {
+  UTF();
+  const std::string site = "https://github.com/YaroslavlPe1/Rl/blob/main/Error%20code.md";
+  std::cout << text << "\n"
+  << "Код ошибки: " << err << "\n"
+  << "Подробнее на сайте: " << site << "\n\n"
+  << texta << "\n"
+  << "Error code: " << err << "\n"
+  << "Learn more at: " << site << "\n"
+  << "\n\nProcess finished with exit code " << err << std::endl;
+ }
+
+ void pcode(const std::string& input) {
+  UTF();
+  Lexer lexer(input);
+  std::vector<Token> tokens = lexer.tokenize();
+
+  Parser parser(tokens);
+  try {
+  int result = parser.parse();
+  std::cout << result << std::endl;
+  enderr(0);
+  } catch (const std::exception& e) {
+  if (!tokens.empty()) {
+
+  }
+  error(3, e.what(), e.what());
+  }
+ }
+
+
+ void debag(const std::string& input) {
+  Lexer lexer(input);
+  std::vector<Token> tokens = lexer.tokenize();
+
+  UTF();
+  std::cout << "Debug mode: Token list:\n";
+  for (const Token& token : tokens) {
+  std::cout << "Token(Type: " << static_cast<int>(token.type) << ", Value: \"" << token.value << "\")\n";
+  }
+
+  Parser parser(tokens);
+  try {
+  int result = parser.parse();
+  std::cout << result << std::endl;
+  enderr(0);
+  } catch (const std::exception& e) {
+  if (!tokens.empty()) {
+
+  }
+  error(3, e.what(), e.what());
+  }
+
+  enderr(0);
+ }
+
+ enum class Mode {
+  Default,
+  Debug,
+  None
+ };
+
+ Mode determineMode(bool isDefault, bool isDebug) {
+  if (isDefault && isDebug) {
+  return Mode::None;
+  } else if (!isDefault && !isDebug) {
+  return Mode::None;
+  } else if (isDefault) {
+  return Mode::Default;
+  } else {
+  return Mode::Debug;
+  }
+ }
+
+ void controller(const std::string& text, bool isDefault, bool isDebug) {
+  Mode mode = determineMode(isDefault, isDebug);
+
+  switch (mode) {
+  case Mode::None:
+  error(2, "Ошибка: не выбран режим работы!", "Error: no mode selected!");
+  return;
+  case Mode::Default:
+  pcode(text);
+  break;
+  case Mode::Debug:
+  debag(text);
+  break;
+  }
+ }#ifndef CONTROLLER_H
+ #define CONTROLLER_H
+
+ #include <string>
+
+ void UTF();
+ void pcode(const std::string& text);
+ void debag(const std::string& text);
+ void error(int err, const std::string& text, const std::string& texta);
+ void controller(const std::string& text, bool isDefault, bool isDebug);
+
+ #endif // CONTROLLER_H #include "lexer.h"
+
+ void Lexer::advance() {
+  position++;
+  if (position > text.length() - 1) {
+  currentChar = '\0';
+  } else {
+  currentChar = text[position];
+  }
+ }
+
+ char Lexer::peek() {
+  size_t peekPos = position + 1;
+  if (peekPos > text.length() - 1) {
+  return '\0';
+  } else {
+  return text[peekPos];
+  }
+ }
+
+ Token Lexer::number() {
+  std::string result;
+  while (currentChar >= '0' && currentChar <= '9') {
+  result += currentChar;
+  advance();
+  }
+  return Token(TokenType::NUMBER, result);
+ }
+
+ std::vector<Token> Lexer::tokenize() {
+  std::vector<Token> tokens;
+  while (currentChar != '\0') {
+  if (currentChar == ' ') {
+  advance();
+  continue;
+  }
+  if (currentChar >= '0' && currentChar <= '9') {
+  tokens.push_back(number());
+  continue;
+  }
+  if (currentChar == '+') {
+  tokens.push_back(Token(TokenType::PLUS, "+"));
+  advance();
+  continue;
+  }
+  if (currentChar == '-') {
+  tokens.push_back(Token(TokenType::MINUS, "-"));
+  advance();
+  continue;
+  }
+  if (currentChar == '*') {
+  tokens.push_back(Token(TokenType::MULTIPLY, "*"));
+  advance();
+  continue;
+  }
+  if (currentChar == '/') {
+  tokens.push_back(Token(TokenType::DIVIDE, "/"));
+  advance();
+  continue;
+  }
+  if (currentChar == '(') {
+  tokens.push_back(Token(TokenType::LPAREN, "("));
+  advance();
+  continue;
+  }
+  if (currentChar == ')') {
+  tokens.push_back(Token(TokenType::RPAREN, ")"));
+  advance();
+  continue;
+  }
+  advance();
+  }
+  tokens.push_back(Token(TokenType::END, ""));
+  return tokens;
+ }
+  #ifndef LEXER_H
+ #define LEXER_H
+
+ #include <vector>
+ #include <string>
+ #include "token.h"
+
+ class Lexer {
+ public:
+  Token getNextToken();
+  Lexer(const std::string& text) : text(text), position(0), currentChar(text[position]) {}
+  std::vector<Token> tokenize();
+
+ private:
+  std::string text;
+  size_t position;
+  char currentChar;
+  void advance();
+  char peek();
+  Token number();
+ };
+
+ #endif // LEXER_H
+  #include "controller.h"
+ #include <iostream>
+
+ int main() {
+  std::string input = "(10 + 4) * 32";
+  controller(input, true, false);
+  return 0;
+ }#include "parser.h"
+ #include <stdexcept>
+ #include <string>
+ #include "token.h"
+ #include <iostream>
+ #include <stdexcept>
+
+ void Parser::advance() {
+  if (currentTokenIndex < tokens.size()) {
+  currentTokenIndex++;
+  }
+ }
+
+ int Parser::factor() {
+  Token token = currentToken();
+
+  if (token.type == TokenType::NUMBER) {
+  advance();
+  return std::stoi(token.value);
+  } else if (token.type == TokenType::LPAREN) {
+  advance();
+  int result = expression();
+  if (currentToken().type != TokenType::RPAREN) {
+  throw std::runtime_error("Expected closing parenthesis");
+  }
+  advance();
+  return result;
+  }
+
+  throw std::runtime_error("" + token.value + " (type: " + std::to_string(static_cast<int>(token.type)) + ")");
+ }
+
+
+
+
+ int Parser::term() {
+  int result = factor();
+  while (currentToken().type == TokenType::MULTIPLY || currentToken().type == TokenType::DIVIDE) {
+  Token token = currentToken();
+  advance();
+  if (token.type == TokenType::MULTIPLY) {
+  result *= factor();
+  } else {
+  result /= factor();
+  }
+  }
+  return result;
+ }
+
+ int Parser::expression() {
+  int result = term();
+  while (currentToken().type == TokenType::PLUS || currentToken().type == TokenType::MINUS) {
+  Token token = currentToken();
+  advance();
+  if (token.type == TokenType::PLUS) {
+  result += term();
+  } else {
+  result -= term();
+  }
+  }
+  return result;
+ }
+
+ int Parser::parse() {
+  return expression();
+ }#ifndef PARSER_H
+ #define PARSER_H
+
+ #include "token.h"
+ #include <vector>
+
+ class Parser {
+ public:
+  Parser(const std::vector<Token>& tokens) : tokens(tokens), currentTokenIndex(0) {}
+
+  int parse();
+
+ private:
+  std::vector<Token> tokens;
+  size_t currentTokenIndex;
+
+  Token currentToken() {
+  return tokens[currentTokenIndex];
+  }
+
+  void advance();
+  int factor();
+  int term();
+  int expression();
+ };
+
+ #endif // PARSER_H
+  #ifndef TOKEN_H
+ #define TOKEN_H
+
+ #include <string>
+
+ enum class TokenType {
+  NUMBER,
+  PLUS,
+  MINUS,
+  MULTIPLY,
+  DIVIDE,
+  LPAREN,
+  RPAREN,
+  END
+ };
+
+ struct Token {
+  TokenType type;
+  std::string value;
+
+  Token(TokenType type, const std::string& value) : type(type), value(value) {}
+ };
+
+ #endif // TOKEN_H
